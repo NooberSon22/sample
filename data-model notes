@@ -1,0 +1,123 @@
+user
+    user_id
+    username
+    email
+    firstname
+    lastname
+    role_id
+    campus_id
+    password
+    date_created
+    user_photo_url
+    status
+
+
+role
+    role_id
+    role_type: "SUPER ADMINISTRATOR", "ADMINISTRATOR", "STUDENT", "FACULTY", "STAFF"
+    permissions: 
+        - manage-documents  // module
+            - upload file   // access
+            - edit file
+
+        - roles & permissions
+
+            - upload file
+            - edit file
+
+        - upload file
+        - edit file
+        - write document
+
+usertype
+    usertype_id
+    usertype_name
+
+campus
+    campus_id
+    campus_name
+    campus_code
+    campus_phone_number
+    campus_email
+    campus_address
+    campus_cover_photo_url
+    campus_about
+    campus_programs: 
+        [   
+            program_type_id 
+            [ 
+                {
+                    program name: "Financial Management"
+                    majors: []
+                }
+            ],
+        ]
+    campus_offices: [
+        {
+            office_name
+            office_email
+            office_number
+            office_head
+        }
+    ]
+    
+
+campus_program_type
+    campus_program_type_id
+    program_type_name   - undergraduate / graduate
+    
+
+administrative_position
+    administrative_position_id
+    administrative_position_name
+    date_added
+
+
+key_official
+    key_official_id
+    administrative_position_id
+    name
+    key_official_photo_url
+    is_deleted 
+    // campus head, deans, registrar - per campus
+
+
+user_activity_log
+    user_activity_log_id
+    user_id
+    action_taken
+    date_time
+
+feedback
+    feedback_id
+    user_id
+    rating
+    comment
+    date
+
+satisfaction
+    satisfaction_id
+    user_id
+    is_satisfied
+    date
+
+general_settings
+    general_logo_url
+    general_about
+    privacy_policies
+
+university_management
+    university_logo_url
+    university_vector_url
+    university_history
+    university_vision
+    university_mission
+    university_core_values
+
+report_template
+    report_template_id
+    report_template_file_url
+
+
+    
+    

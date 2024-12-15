@@ -1,0 +1,195 @@
+USER COLLECTION
+{
+  "user_id": "unique_id",
+  "user_number": "B2022-0535",
+  "username": "",
+  "email": "natureson22@example.com",
+  "firstname": "Nature",
+  "middlename": "",
+  "lastname": "Son",
+  "role_id": "123",
+  "custom_permissions": {
+    "granted": [
+      { "module": "manage-documents", "access": ["upload file"] },
+      { "module": "roles-permissions", "access": ["assign role", "remove role"] }
+    ],
+    "revoked": [
+      { "module": "roles-permissions", "access": ["assign role"] }
+    ]
+  },
+  "campus_id": "campus_001",
+  "password": "hashed_password",
+  "date_created": "2024-12-12T00:00:00Z",
+  "user_photo_url": "https://example.com/photo.jpg",
+  "status": "active"
+}
+
+
+ROLE COLLECTION
+{
+  "role_id": "123",
+  "role_type": "ADMINISTRATOR",
+  "permissions": [
+    { "module": "manage-documents", "access": ["upload file", ""] },
+    { "module": "roles-permissions", "access": ["assign role", "remove role"] }
+  ]
+}
+
+
+CAMPUS COLLECTION
+{
+  "campus_id": "campus_001",
+  "campus_name": "Binangonan",
+  "campus_code": "BIN",
+  "campus_phone_number": "123-456-7890",
+  "campus_email": "binangonan@.edu",
+  "campus_address": "123 Main St, City, Country",
+  "campus_cover_photo_url": "https://example.com/campus.jpg",
+  "campus_about": "A somewhat leading campus...",
+  "campus_programs": [
+    {
+      "program_type_id": "undergraduate",
+      "programs": [
+        {
+          "program_name": "Business Administration",
+          "majors": ["Finance", "Marketing"]
+        }
+      ]
+    },
+     {
+      "program_type_id": "graduate",
+      "programs": [
+        {
+          "program_name": "Business Administration",
+          "majors": ["Finance", "Marketing"]
+        }
+      ]
+    }
+  ],
+  "campus_offices": [
+    {
+      "office_name": "Registrar's Office",
+      "office_email": "registrar@maincampus.edu",
+      "office_number": "123-456-7890",
+      "office_head": "Jane Doe"
+    }
+  ],
+  "colleges": ["computer studies"]
+}
+
+CAMPUS PROGRAM TYPE COLLECTION
+{
+  "campus_program_type_id": "undergraduate",
+  "program_type_name": "Undergraduate"
+}
+
+ADMINISTRATIVE POSITION COLLECTION
+{
+  "administrative_position_id": "pos_001",
+  "administrative_position_name": "Campus Dean",
+  "date_added": "2024-12-12T00:00:00Z",
+}
+
+KEY OFFICIAL COLLECTION
+{
+  "key_official_id": "key_001",
+  "administrative_position_id": "pos_001",
+  "name": "Dr. Alice Smith",
+  "key_official_photo_url": "https://example.com/photo.jpg",
+  "campus_id": "campus_001"
+  "is_deleted": false
+}
+
+USER ACTIVITY LOG COLLECTION
+{
+  "user_activity_log_id": "log_001",
+  "user_id": "unique_id",
+  "action_taken": "Logged in",
+  "date_time": "2024-12-12T00:00:00Z"
+}
+
+FEEDBACK COLLECTION
+{
+  "feedback_id": "fb_001",
+  "user_id": "unique_id",
+  "type": "feedback", 
+  "rating": 5,
+  "comment": "Great experience!",
+  "date": "2024-12-12T00:00:00Z"
+}
+
+SATISFACTION COLLECTION (MERGED WITH FEEDBACK)
+{
+  "feedback_id": "sat_001",
+  "user_id": "unique_id",
+  "type": "satisfaction",
+  "is_satisfied": true,
+  "date": "2024-12-12T00:00:00Z"
+}
+
+GENERAL SETTINGS COLLECTION
+{
+  "general_logo_url": "https://example.com/logo.png",
+  "general_about": "About the university...",
+  "privacy_policies": "The website only uses..."
+}
+
+UNIVERSITY MANAGEMENT COLLECTION
+{
+  "university_logo_url": "https://example.com/university_logo.png",
+  "university_vector_url": "https://example.com/vector.svg",
+  "university_history": "Founded in 1900...",
+  "university_vision": "The somewhat leading university...",
+  "university_mission": "The university of...",
+  "university_core_values": ["Responsiveness", "Integrity", "Excellence"]
+}
+
+
+REPORT TEMPLATE COLLECTION
+{
+  "report_template_id": "tmpl_001",
+  "report_template_file_url": "https://example.com/template.pdf",
+}
+
+// AUDIT LOG COLLECTION
+// {
+//   "audit_log_id": "audit_001",
+//   "user_id": "admin_001",
+//   "action": "Updated campus details",
+//   "details": { "campus_id": "campus_001", "updated_field": "campus_name" },
+//   "date_time": "2024-12-12T00:00:00Z"
+// }
+
+
+
+
+
+
+function hasPermission(user, requiredPermission) {
+  // Fetch role permissions based on the user's role ID
+  const rolePermissions = getRolePermissions(user.role_id);
+
+  // Check explicitly granted custom permissions
+  const isExplicitlyGranted = user.custom_permissions.granted?.some(
+    (perm) => perm.module === requiredPermission.module &&
+              perm.access.includes(requiredPermission.access)
+  );
+
+  // Check explicitly revoked custom permissions
+  const isExplicitlyRevoked = user.custom_permissions.revoked?.some(
+    (perm) => perm.module === requiredPermission.module &&
+              perm.access.includes(requiredPermission.access)
+  );
+
+  // Check role permissions
+  const isRoleAllowed = rolePermissions.some(
+    (perm) => perm.module === requiredPermission.module &&
+              perm.access.includes(requiredPermission.access)
+  );
+
+  // Final decision:
+  // - Explicitly revoked permissions always deny access.
+  // - Explicitly granted permissions override role restrictions.
+  // - Fall back to role permissions if no overrides exist.
+  return !isExplicitlyRevoked && (isExplicitlyGranted || isRoleAllowed);
+}
